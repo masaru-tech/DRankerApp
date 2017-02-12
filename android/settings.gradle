@@ -1,0 +1,3 @@
+rootProject.name = 'DRankerApp'
+
+include ':app'
