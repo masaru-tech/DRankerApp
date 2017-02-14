@@ -19,6 +19,16 @@ import {
   ListView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Router, Scene, Actions, Modal, Reducer } from 'react-native-router-flux';
+
+const reducerCreate = params=>{
+  const defaultReducer = Reducer(params);
+  return (state, action)=>{
+    // console.log("ACTION:", action);
+    return defaultReducer(state, action);
+  }
+};
+StatusBar.setBarStyle('light-content', true);
 
 const size = {
   width: Dimensions.get('window').width,
@@ -95,21 +105,49 @@ class MovieListView extends Component {
   }
 }
 
-export default class DRankerApp extends Component {
+class DRankerApp extends Component {
   render() {
     return (
-      <View style={{flex: 1}}>
-        <View style={styles.statusBar} backgroundColor={MAIN_COLOR}>
-          <StatusBar barStyle="light-content" />
-        </View>
-        <AppBar />
+      <View style={{flex: 1, paddingTop: 64}}>
         <MovieListView />
-        <TouchableWithoutFeedback onPress={() => {}}>
+        <TouchableWithoutFeedback onPress={Actions.login}>
           <View style={styles.btnContent}>
             <Icon name="md-create" size={25} color={MAIN_COLOR}/>
           </View>
         </TouchableWithoutFeedback>
       </View>
+    );
+  }
+}
+
+class ModalPage extends Component {
+  render() {
+    return (
+      <View style={{flex: 1}}>
+        <View style={styles.statusBar} backgroundColor={MAIN_COLOR}>
+          <StatusBar />
+        </View>
+        <AppBar />
+        <Text>aaaaa</Text>
+        <Text onPress={Actions.pop}>Close Page Modal!</Text>
+      </View>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Router createReducer={reducerCreate}>
+        <Scene key="modal" component={Modal} >
+          <Scene key="root">
+            <Scene key="list" navigationBarStyle={{backgroundColor: MAIN_COLOR, borderBottomWidth: 0}} initial={true} component={DRankerApp} title={<Icon name="md-beer" size={27} color='#fff'/>}/>
+            <Scene key="login" direction="vertical">
+              <Scene key="modalPage"direction="vertical" hideNavBar={true} schema="modal" component={ModalPage} />
+            </Scene>
+          </Scene>
+        </Scene>
+      </Router>
     );
   }
 }
@@ -161,4 +199,4 @@ const styles = StyleSheet.create({
   }
 });
 
-AppRegistry.registerComponent('DRankerApp', () => DRankerApp);
+AppRegistry.registerComponent('DRankerApp', () => App);
