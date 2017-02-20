@@ -110,7 +110,7 @@ class DRankerApp extends Component {
     return (
       <View style={{flex: 1, paddingTop: 64}}>
         <MovieListView />
-        <TouchableWithoutFeedback onPress={Actions.login}>
+        <TouchableWithoutFeedback onPress={Actions.modalPage}>
           <View style={styles.btnContent}>
             <Icon name="md-create" size={25} color={MAIN_COLOR}/>
           </View>
@@ -141,10 +141,10 @@ class App extends Component {
       <Router createReducer={reducerCreate}>
         <Scene key="modal" component={Modal} >
           <Scene key="root">
-            <Scene key="list" navigationBarStyle={{backgroundColor: MAIN_COLOR, borderBottomWidth: 0}} initial={true} component={DRankerApp} title={<Icon name="md-beer" size={27} color='#fff'/>}/>
-            <Scene key="login" direction="vertical">
-              <Scene key="modalPage"direction="vertical" hideNavBar={true} schema="modal" component={ModalPage} />
+            <Scene key="main">
+              <Scene key="list" navigationBarStyle={{backgroundColor: MAIN_COLOR, borderBottomWidth: 0}} initial={true} component={DRankerApp} title={<Icon name="md-beer" size={27} color='#fff'/>}/>
             </Scene>
+            <Scene key="modalPage" direction="vertical" hideNavBar={true} schema="modal" component={ModalPage} />
           </Scene>
         </Scene>
       </Router>
