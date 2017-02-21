@@ -6,7 +6,8 @@ import {
   StatusBar,
   TouchableHighlight,
   RecyclerViewBackedScrollView,
-  ListView
+  ListView,
+  TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from './Header';
@@ -55,11 +56,14 @@ export default class SakeList extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View>
         <View style={styles.statusBar} backgroundColor={MAIN_COLOR}>
           <StatusBar />
         </View>
         <Header />
+        <View>
+          <TextInput style={styles.searchField} placeholder="お酒名/よみがなを入力" />
+        </View>
         <ListView
           dataSource={this.state.data}
           renderRow={this._renderRow.bind(this)}
@@ -75,5 +79,11 @@ export default class SakeList extends Component {
 const styles = StyleSheet.create({
   statusBar: {
     height: 20
+  },
+  searchField: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    paddingLeft: 10
   }
 });
