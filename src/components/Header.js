@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions } from 'react-native-router-flux';
+import { MAIN_COLOR } from '../Common';
 
 export default class Header extends Component{
   render() {
@@ -26,7 +27,7 @@ export default class Header extends Component{
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#FFBF02',
+    backgroundColor: MAIN_COLOR,
     height: 44,
     flexDirection: "row",
   },

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions } from 'react-native-router-flux';
+import { MAIN_COLOR } from '../Common';
 
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
@@ -67,7 +68,7 @@ export default class Timeline extends Component {
         />
         <TouchableWithoutFeedback onPress={Actions.sakeList}>
           <View style={styles.btnContent}>
-            <Icon name="md-create" size={25} color='#FFBF02'/>
+            <Icon name="md-create" size={25} color={MAIN_COLOR} />
           </View>
         </TouchableWithoutFeedback>
       </View>

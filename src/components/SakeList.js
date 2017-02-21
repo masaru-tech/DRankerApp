@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from './Header';
+import { MAIN_COLOR } from '../Common';
 
 StatusBar.setBarStyle('light-content', true);
 
@@ -55,7 +56,7 @@ export default class SakeList extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={styles.statusBar} backgroundColor='#FFBF02'>
+        <View style={styles.statusBar} backgroundColor={MAIN_COLOR}>
           <StatusBar />
         </View>
         <Header />
