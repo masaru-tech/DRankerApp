@@ -60,14 +60,14 @@ export default class SakeList extends Component {
             keyword: searchTxt
           }
         })
-        .then(function (response) {
+        .then((response) => {
           let newSakes = response.data;
           self.setState({
             sakes: newSakes,
             dataSource: self.state.dataSource.cloneWithRows(newSakes)
           })
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error);
         });
   }
