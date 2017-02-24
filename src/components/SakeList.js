@@ -10,6 +10,7 @@ import {
   TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SearchBar } from 'react-native-elements';
 import Header from './Header';
 import { MAIN_COLOR } from '../Common';
 
@@ -61,9 +62,11 @@ export default class SakeList extends Component {
           <StatusBar />
         </View>
         <Header />
-        <View>
-          <TextInput style={styles.searchField} placeholder="お酒名/よみがなを入力" />
-        </View>
+        <SearchBar
+          onChangeText={() => {}}
+          containerStyle={styles.searchBar}
+          inputStyle={styles.searchInput}
+          placeholder='お酒名/よみがなで検索' />
         <ListView
           dataSource={this.state.data}
           renderRow={this._renderRow.bind(this)}
@@ -80,10 +83,12 @@ const styles = StyleSheet.create({
   statusBar: {
     height: 20
   },
-  searchField: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    paddingLeft: 10
+  searchBar: {
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    backgroundColor: MAIN_COLOR
+  },
+  searchInput: {
+    backgroundColor: '#fff',
   }
 });
