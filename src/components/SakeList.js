@@ -53,9 +53,13 @@ export default class SakeList extends Component {
     );
   }
 
-  searchSake(input) {
+  searchSake(searchTxt) {
     self = this;
-    axios.get('http://192.168.56.111:3000/api/sakes')
+    axios.get('http://192.168.56.111:3000/api/sakes', {
+          params: {
+            keyword: searchTxt
+          }
+        })
         .then(function (response) {
           let newSakes = response.data;
           self.setState({
