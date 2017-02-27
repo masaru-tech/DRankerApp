@@ -16,6 +16,7 @@ import Header from './Header';
 import { MAIN_COLOR } from '../Common';
 import axios from 'axios';
 const { height } = Dimensions.get('window');
+import InfiniteScrollView from 'react-native-infinite-scroll-view';
 
 StatusBar.setBarStyle('light-content', true);
 
@@ -26,8 +27,13 @@ export default class SakeList extends Component {
     let sakes = []
     this.state = {
       sakes: sakes,
-      dataSource: ds.cloneWithRows(sakes)
+      dataSource: ds.cloneWithRows(sakes),
+      canLoadMoreContent: false
     };
+  }
+
+  _loadMoreContentAsync = async () => {
+    console.log(this.state)
   }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -61,10 +67,12 @@ export default class SakeList extends Component {
           }
         })
         .then((response) => {
+          console.log(response.headers.link)
           let newSakes = response.data;
           self.setState({
             sakes: newSakes,
-            dataSource: self.state.dataSource.cloneWithRows(newSakes)
+            dataSource: self.state.dataSource.cloneWithRows(newSakes),
+            canLoadMoreContent: true
           })
         })
         .catch((error) => {
@@ -88,9 +96,12 @@ export default class SakeList extends Component {
           <ListView
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
-            renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+            renderScrollComponent={props => <InfiniteScrollView {...props} />}
             renderSeparator={this._renderSeparator}
             enableEmptySections={true}
+            canLoadMore={this.state.canLoadMoreContent}
+            distanceToLoadMore={10}
+            onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
           />
         </View>
       </View>
