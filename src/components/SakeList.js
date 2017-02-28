@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SearchBar, ListItem } from 'react-native-elements';
 import Header from './Header';
-import { MAIN_COLOR } from '../Common';
+import Colors from '../Colors';
 import axios from 'axios';
 const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
@@ -100,7 +100,7 @@ export default class SakeList extends Component {
   render() {
     return (
       <View>
-        <View style={styles.statusBar} backgroundColor={MAIN_COLOR}>
+        <View style={styles.statusBar} backgroundColor={Colors.main}>
           <StatusBar />
         </View>
         <Header />
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   searchBar: {
     borderTopWidth: 0,
     borderBottomWidth: 0,
-    backgroundColor: MAIN_COLOR
+    backgroundColor: Colors.main
   },
   searchInput: {
     backgroundColor: '#fff',
