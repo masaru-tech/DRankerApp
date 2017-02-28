@@ -17,6 +17,7 @@ import { MAIN_COLOR } from '../Common';
 import axios from 'axios';
 const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
+import { parse_link_header } from '../Util'
 
 StatusBar.setBarStyle('light-content', true);
 
@@ -28,12 +29,27 @@ export default class SakeList extends Component {
     this.state = {
       sakes: sakes,
       dataSource: ds.cloneWithRows(sakes),
-      canLoadMoreContent: false
+      canLoadMoreContent: false,
+      nextUrl: null
     };
   }
 
   _loadMoreContentAsync = async () => {
-    console.log(this.state)
+    self = this;
+    axios.get(this.state.nextUrl)
+        .then((response) => {
+          let links = parse_link_header(response.headers.link);
+          let newSakes = self.state.sakes.concat(response.data);
+          self.setState({
+            sakes: newSakes,
+            dataSource: self.state.dataSource.cloneWithRows(newSakes),
+            canLoadMoreContent: links.next != null,
+            nextUrl: links.next
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -67,12 +83,13 @@ export default class SakeList extends Component {
           }
         })
         .then((response) => {
-          console.log(response.headers.link)
+          let links = parse_link_header(response.headers.link);
           let newSakes = response.data;
           self.setState({
             sakes: newSakes,
             dataSource: self.state.dataSource.cloneWithRows(newSakes),
-            canLoadMoreContent: true
+            canLoadMoreContent: links.next != null,
+            nextUrl: links.next
           })
         })
         .catch((error) => {
@@ -100,7 +117,7 @@ export default class SakeList extends Component {
             renderSeparator={this._renderSeparator}
             enableEmptySections={true}
             canLoadMore={this.state.canLoadMoreContent}
-            distanceToLoadMore={10}
+            distanceToLoadMore={50}
             onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
           />
         </View>
