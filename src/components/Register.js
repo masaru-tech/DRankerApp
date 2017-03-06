@@ -3,67 +3,118 @@ import {
   StyleSheet,
   View,
   TextInput,
-  TouchableHighlight
+  Animated,
+  Easing,
+  Dimensions,
+  TouchableWithoutFeedback
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
 import Colors from '../Colors';
 import axios from 'axios';
+import Timeline from './Timeline';
+const { width, height } = Dimensions.get('window');
 
 export default class Register extends Component {
   constructor(props) {
     super(props);
-    this.state = { displayName: null };
+    this.state = {
+      displayName: null,
+      scale: new Animated.Value(1),
+      on: 1,
+      scaleOn: 0,
+    };
     this.register = this.register.bind(this)
   }
 
   register() {
+    self = this;
     axios.post('http://192.168.56.111:3000/api/users', {
             display_name: this.state.displayName
           })
           .then((response) => {
             const jwt = response.data.jwt;
-            Actions.main();
+            self._loginAnimation();
           })
           .catch((error) => {
             console.log(error);
           });
   }
 
+  _loginAnimation() {
+    this.setState({
+      on: 1,
+    });
+    Animated.timing(
+       this.state.scale,
+       {toValue: 20,
+        duration: 500,
+        easing: Easing.elastic(1),
+      },
+    ).start(() => {
+      this.setState({
+        scaleOn: 1,
+      });
+    });
+  }
+
   render() {
     return (
-      <View style={styles.register}>
-        <TextInput
-          style={styles.displayName}
-          onChangeText={(text) => this.setState({displayName: text})}
-          value={this.state.displayName}
-          placeholder="表示名を入力(後で変更可能)"
-        />
-        <Button
-          large
-          borderRadius={30}
-          title='利用を開始する'
-          onPress={this.register} />
+      <View style={{flex: 1}}>
+        {this.state.scaleOn?
+          <View style={styles.scaleContainer}>
+            <Timeline />
+          </View>:
+          <View style={styles.register}>
+            <TextInput
+              style={styles.displayName}
+              onChangeText={(text) => this.setState({displayName: text})}
+              value={this.state.displayName}
+              placeholder="表示名を入力(後で変更可能)"
+            />
+            <TouchableWithoutFeedback onPress={() => this.register()}>
+              <Animated.View style={[styles.btnContent,{transform:[{scale:this.state.scale}]}]}>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          </View>
+        }
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  displayName: {
-    height: 40,
-    backgroundColor: '#fff',
-    borderColor: 'white',
-    borderWidth: 0,
-    borderRadius: 20,
-    margin: 20,
-    paddingLeft: 15
-  },
-  register: {
-    flex: 1,
+  btnContent:{
+    position: "absolute",
+    top: 320,
+    left: width / 2 - 25,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: Colors.main,
     alignItems: "center",
     justifyContent: "center",
+  },
+  scaleContainer:{
+    position: "absolute",
+    height: height,
+    width: width,
+    top: 0,
+    left: 0,
+  },
+  register: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  displayName: {
+    height: 40,
+    backgroundColor: '#fff',
+    borderColor: Colors.main,
+    borderWidth: 1,
+    borderRadius: 20,
+    margin: 20,
+    paddingLeft: 15
   }
 });

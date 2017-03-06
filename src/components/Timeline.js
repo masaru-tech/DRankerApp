@@ -8,11 +8,13 @@ import {
   TouchableWithoutFeedback,
   ListView,
   Dimensions,
-  PixelRatio
+  PixelRatio,
+  StatusBar
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions } from 'react-native-router-flux';
 import Colors from '../Colors';
+import Header from './Header';
 
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
@@ -58,7 +60,11 @@ export default class Timeline extends Component {
 
   render() {
     return (
-      <View style={{flex: 1, paddingTop: 64}}>
+      <View style={{flex: 1}}>
+        <View style={{height: 20}} backgroundColor={Colors.main}>
+          <StatusBar />
+        </View>
+        <Header />
         <ListView
           dataSource={this.state.data}
           renderRow={this._renderRow.bind(this)}

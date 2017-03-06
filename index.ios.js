@@ -9,7 +9,6 @@ import { AppRegistry } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Router, Scene, Actions, Modal, Reducer } from 'react-native-router-flux';
 
-import Timeline from './src/components/Timeline';
 import SakeList from './src/components/SakeList';
 import Register from './src/components/Register';
 import Colors from './src/Colors';
@@ -28,9 +27,8 @@ class App extends Component {
       <Router createReducer={reducerCreate}>
         <Scene key="modal" component={Modal} >
           <Scene key="root">
-            <Scene key="register" initial={true} component={Register} hideNavBar={true} />
             <Scene key="main">
-              <Scene key="timeline" navigationBarStyle={{backgroundColor: Colors.main, borderBottomWidth: 0}} component={Timeline} title={<Icon name="md-beer" size={27} color='#fff'/>}/>
+              <Scene key="timeline" navigationBarStyle={{backgroundColor: Colors.main, borderBottomWidth: 0}} initial={true} hideNavBar={true} component={Register} title={<Icon name="md-beer" size={27} color='#fff'/>}/>
             </Scene>
             <Scene key="sakeList" direction="vertical" hideNavBar={true} schema="modal" component={SakeList} />
           </Scene>
