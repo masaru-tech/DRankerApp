@@ -14,6 +14,7 @@ import { Actions } from 'react-native-router-flux';
 import Colors from '../Colors';
 import axios from 'axios';
 import Timeline from './Timeline';
+import * as Keychain from 'react-native-keychain';
 const { width, height } = Dimensions.get('window');
 
 export default class Register extends Component {
@@ -24,18 +25,29 @@ export default class Register extends Component {
       scale: new Animated.Value(1),
       on: 1,
       scaleOn: 0,
+      token: null
     };
-    this.register = this.register.bind(this)
+    this.register = this.register.bind(this);
+
+    Keychain.getInternetCredentials('dranker')
+            .then((credentials) => {
+              if (credentials) {
+                this.setState({token: credentials.password});
+              }
+            });
   }
 
   register() {
-    self = this;
     axios.post('http://192.168.56.111:3000/api/users', {
             display_name: this.state.displayName
           })
           .then((response) => {
             const jwt = response.data.jwt;
-            self._loginAnimation();
+            Keychain.setInternetCredentials('dranker', 'dranker', jwt)
+                    .then(() => {
+                      console.log('Credentials saved successfully!');
+                      this._loginAnimation();
+                    });
           })
           .catch((error) => {
             console.log(error);
@@ -62,7 +74,7 @@ export default class Register extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        {this.state.scaleOn?
+        {this.state.scaleOn || this.state.token != null ?
           <View style={styles.scaleContainer}>
             <Timeline />
           </View>:
@@ -73,7 +85,7 @@ export default class Register extends Component {
               value={this.state.displayName}
               placeholder="表示名を入力(後で変更可能)"
             />
-            <TouchableWithoutFeedback onPress={() => this.register()}>
+            <TouchableWithoutFeedback onPress={this.register}>
               <Animated.View style={[styles.btnContent,{transform:[{scale:this.state.scale}]}]}>
               </Animated.View>
             </TouchableWithoutFeedback>
