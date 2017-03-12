@@ -54,7 +54,7 @@ export default class SakeList extends Component {
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <TouchableHighlight onPress={() => {}}>
+      <TouchableHighlight underlayColor={Colors.select} onPress={() => {}}>
         <View>
           <ListItem
             title={this.state.sakes[rowID].name} />

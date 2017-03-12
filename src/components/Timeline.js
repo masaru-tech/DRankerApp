@@ -38,7 +38,7 @@ export default class Timeline extends Component {
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <TouchableHighlight onPress={() => {}}>
+      <TouchableHighlight underlayColor={Colors.select} onPress={() => {}}>
         <View style={{padding: 10}}>
           <Text>{rowData}</Text>
         </View>
