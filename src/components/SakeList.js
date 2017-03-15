@@ -17,7 +17,9 @@ import Colors from '../Colors';
 import axios from 'axios';
 const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
-import { parse_link_header } from '../Util'
+import { parse_link_header } from '../Util';
+import { Actions } from 'react-native-router-flux';
+
 
 StatusBar.setBarStyle('light-content', true);
 
@@ -54,7 +56,7 @@ export default class SakeList extends Component {
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <TouchableHighlight underlayColor={Colors.select} onPress={() => {}}>
+      <TouchableHighlight underlayColor={Colors.select} onPress={Actions.sakeDetail}>
         <View>
           <ListItem
             title={this.state.sakes[rowID].name} />

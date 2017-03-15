@@ -72,7 +72,7 @@ export default class Timeline extends Component {
           renderSeparator={this._renderSeparator}
           enableEmptySections={true}
         />
-        <TouchableWithoutFeedback onPress={Actions.sakeList}>
+        <TouchableWithoutFeedback onPress={Actions.checkIn}>
           <View style={styles.btnContent}>
             <Icon name="md-create" size={25} color={Colors.main} />
           </View>

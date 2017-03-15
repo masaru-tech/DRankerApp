@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Router, Scene, Actions, Modal, Reducer } from 'react-native-router-flux';
 
 import SakeList from './src/components/SakeList';
+import SakeDetail from './src/components/SakeDetail';
 import Register from './src/components/Register';
 import Colors from './src/Colors';
 
@@ -30,7 +31,10 @@ class App extends Component {
             <Scene key="main">
               <Scene key="timeline" navigationBarStyle={{backgroundColor: Colors.main, borderBottomWidth: 0}} initial={true} hideNavBar={true} component={Register} title={<Icon name="md-beer" size={27} color='#fff'/>}/>
             </Scene>
-            <Scene key="sakeList" direction="vertical" hideNavBar={true} schema="modal" component={SakeList} />
+            <Scene key="checkIn" direction="vertical" schema="modal">
+              <Scene key="sakeList" component={SakeList} hideNavBar={true} />
+              <Scene key="sakeDetail" component={SakeDetail} hideNavBar={false} navigationBarStyle={{backgroundColor: Colors.main, borderBottomWidth: 0}} />
+            </Scene>
           </Scene>
         </Scene>
       </Router>
