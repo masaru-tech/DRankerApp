@@ -1,5 +1,5 @@
 const Colors = {
-  main: '#FFBF02',
+  main: '#F4CB07',
   select: '#EEEEEE'
 };
 
