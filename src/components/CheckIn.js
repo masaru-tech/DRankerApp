@@ -2,25 +2,27 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  StatusBar,
   Dimensions
 } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
-import { Actions } from 'react-native-router-flux';
-import Header from './Header';
+
 const { height } = Dimensions.get('window');
 
-import Colors from '../Colors';
-
 export default class CheckIn extends Component {
+  constructor(props) {
+    super(props);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  onNavigatorEvent(event) {
+    if (event.id == 'close') {
+      this.props.navigator.dismissModal();
+    }
+  }
+
   render() {
     return(
       <View style={{backgroundColor: '#EEEEEE', height: height}}>
-        <View style={styles.statusBar} backgroundColor={Colors.main}>
-          <StatusBar />
-        </View>
-        <Header />
         <List>
           <ListItem
             key='map'
@@ -35,16 +37,18 @@ export default class CheckIn extends Component {
             title="お酒を追加"
             hideChevron={true}
             leftIcon={{name: 'md-add-circle', type: 'ionicon'}}
-            onPress={Actions.sake}
+            onPress={() => {
+              this.props.navigator.showModal({
+              screen: 'SakeListScreen',
+              title: "お酒を検索",
+              passProps: {},
+              navigatorStyle: {},
+              animationType: 'slide-up'
+              });
+            }}
           />
         </List>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  statusBar: {
-    height: 20
-  }
-});

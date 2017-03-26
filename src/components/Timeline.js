@@ -12,9 +12,7 @@ import {
   StatusBar
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Actions } from 'react-native-router-flux';
 import Colors from '../Colors';
-import Header from './Header';
 
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
@@ -61,10 +59,6 @@ export default class Timeline extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={{height: 20}} backgroundColor={Colors.main}>
-          <StatusBar />
-        </View>
-        <Header />
         <ListView
           dataSource={this.state.data}
           renderRow={this._renderRow.bind(this)}
@@ -72,7 +66,15 @@ export default class Timeline extends Component {
           renderSeparator={this._renderSeparator}
           enableEmptySections={true}
         />
-        <TouchableWithoutFeedback onPress={Actions.checkIn}>
+        <TouchableWithoutFeedback onPress={() => {
+          this.props.navigator.showModal({
+            screen: "CheckInScreen",
+            title: "登録",
+            passProps: {},
+            navigatorStyle: {},
+            animationType: 'slide-up'
+          });
+        }}>
           <View style={styles.btnContent}>
             <Icon name="md-create" size={25} color={Colors.main} />
           </View>
@@ -85,7 +87,7 @@ export default class Timeline extends Component {
 const styles = StyleSheet.create({
   btnContent: {
     position: 'absolute',
-    top: height - 60,
+    top: height - 64 - 60, // 64=ステータスバー(20) + ナビゲージョンバー(44)
     left: width/2 - 25,
     width: 50,
     height: 50,

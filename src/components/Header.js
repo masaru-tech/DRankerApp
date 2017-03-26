@@ -4,7 +4,7 @@ import {
   View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Actions } from 'react-native-router-flux';
+// import { Actions } from 'react-native-router-flux';
 import Colors from '../Colors';
 
 export default class Header extends Component{
@@ -12,7 +12,7 @@ export default class Header extends Component{
     return (
       <View style={styles.header}>
         <View style={styles.navLeft}>
-          <Icon name="ios-close" size={40} color='#fff' style={{width:30, paddingLeft: 10}} onPress={Actions.pop}></Icon>
+          <Icon name="ios-close" size={40} color='#fff' style={{width:30, paddingLeft: 10}}></Icon>
         </View>
         <View style={styles.navMid}>
           <Icon name="md-beer" size={27} color='#fff'></Icon>
