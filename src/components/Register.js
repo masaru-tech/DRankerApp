@@ -8,13 +8,12 @@ import {
   Dimensions,
   TouchableWithoutFeedback
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
-import { Actions } from 'react-native-router-flux';
 import Colors from '../Colors';
 import axios from 'axios';
-import Timeline from './Timeline';
 import * as Keychain from 'react-native-keychain';
+import { iconsMap, iconsLoaded } from '../AppIcons';
+
 const { width, height } = Dimensions.get('window');
 
 export default class Register extends Component {
@@ -47,6 +46,19 @@ export default class Register extends Component {
                     .then(() => {
                       console.log('Credentials saved successfully!');
                       this._loginAnimation();
+                      iconsLoaded.then(() => {
+                        setTimeout(() => {
+                          this.props.navigator.push({
+                            screen: 'TimelineScreen',
+                            animated: false,
+                            titleImage: iconsMap['md-beer'],
+                            navigatorStyle: {
+                              navBarNoBorder: true
+                            },
+                            backButtonHidden: true
+                          });
+                        }, 500);
+                      });
                     });
           })
           .catch((error) => {
@@ -76,7 +88,6 @@ export default class Register extends Component {
       <View style={{flex: 1}}>
         {this.state.scaleOn || this.state.token != null ?
           <View style={styles.scaleContainer}>
-            <Timeline />
           </View>:
           <View style={styles.register}>
             <TextInput

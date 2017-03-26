@@ -13,16 +13,33 @@ import { iconsMap, iconsLoaded } from './src/AppIcons';
 import {registerScreens} from './src/screens';
 registerScreens();
 
-iconsLoaded.then(() => {
-  Navigation.startSingleScreenApp({
-    screen: {
-      screen: 'TimelineScreen',
-      titleImage: iconsMap['md-beer'],
-      navigatorStyle: {
-        navBarNoBorder: true
-      },
-      navigatorButtons: {}
-    },
-    passProps: {}
-  });
-});
+import * as Keychain from 'react-native-keychain';
+
+Keychain.getInternetCredentials('dranker')
+        .then((credentials) => {
+          if (credentials) {
+            iconsLoaded.then(() => {
+              Navigation.startSingleScreenApp({
+                screen: {
+                  screen: 'TimelineScreen',
+                  titleImage: iconsMap['md-beer'],
+                  navigatorStyle: {
+                    navBarNoBorder: true
+                  }
+                },
+                passProps: {
+                  token: credentials.password
+                }
+              });
+            });
+          } else {
+            Navigation.startSingleScreenApp({
+              screen: {
+                screen: 'RegisterScreen',
+                navigatorStyle: {
+                  navBarHidden: true
+                }
+              }
+            });
+          }
+        });
