@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Text,
   TextInput,
   Animated,
   Easing,
   Dimensions,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ActivityIndicator
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import Colors from '../Colors';
@@ -22,18 +24,10 @@ export default class Register extends Component {
     this.state = {
       displayName: null,
       scale: new Animated.Value(1),
-      on: 1,
-      scaleOn: 0,
-      token: null
+      btnWidth: new Animated.Value(250),
+      on: 0,
+      scaleOn: 0
     };
-    this.register = this.register.bind(this);
-
-    Keychain.getInternetCredentials('dranker')
-            .then((credentials) => {
-              if (credentials) {
-                this.setState({token: credentials.password});
-              }
-            });
   }
 
   register() {
@@ -57,7 +51,7 @@ export default class Register extends Component {
                             },
                             backButtonHidden: true
                           });
-                        }, 500);
+                        }, 1100);
                       });
                     });
           })
@@ -70,15 +64,33 @@ export default class Register extends Component {
     this.setState({
       on: 1,
     });
-    Animated.timing(
-       this.state.scale,
-       {toValue: 20,
-        duration: 500,
-        easing: Easing.elastic(1),
-      },
-    ).start(() => {
+    Animated.sequence([
+      Animated.timing(
+        this.state.btnWidth,
+        {
+          toValue: 50,
+          duration: 300,
+          easing: Easing.elastic(1),
+        },
+      ),
+      Animated.delay(200),
+    ]).start(() => {
       this.setState({
-        scaleOn: 1,
+        on: 2
+      });
+    });
+    Animated.sequence([
+      Animated.delay(600),
+      Animated.timing(
+        this.state.scale,
+        {toValue: 20,
+          duration: 500,
+          easing: Easing.elastic(1),
+        },
+      )
+    ]).start(() => {
+      this.setState({
+        scaleOn: 1
       });
     });
   }
@@ -86,7 +98,7 @@ export default class Register extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        {this.state.scaleOn || this.state.token != null ?
+        {this.state.scaleOn ?
           <View style={styles.scaleContainer}>
           </View>:
           <View style={styles.register}>
@@ -96,10 +108,13 @@ export default class Register extends Component {
               value={this.state.displayName}
               placeholder="表示名を入力(後で変更可能)"
             />
-            <TouchableWithoutFeedback onPress={this.register}>
-              <Animated.View style={[styles.btnContent,{transform:[{scale:this.state.scale}]}]}>
+            <TouchableWithoutFeedback onPress={() => {this.register();}}>
+              <Animated.View style={[styles.btnContent,{width: this.state.btnWidth}]}>
+                {this.state.on ? (this.state.on == 1 ? <ActivityIndicator animating={true} /> : null ) : <Text>開始する</Text> }
               </Animated.View>
             </TouchableWithoutFeedback>
+            <Animated.View style={[styles.scaleBackground,{transform:[{scale:this.state.scale}]}]}>
+            </Animated.View>
           </View>
         }
       </View>
@@ -108,16 +123,25 @@ export default class Register extends Component {
 }
 
 const styles = StyleSheet.create({
-  btnContent:{
-    position: "absolute",
-    top: 320,
+  scaleBackground:{
+    position: 'absolute',
+    top: 300,
     left: width / 2 - 25,
-    width: 50,
+    width: 48,
+    height: 48,
+    borderRadius: 25,
+    backgroundColor: Colors.main,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1
+  },
+  btnContent:{
     height: 50,
     borderRadius: 25,
     backgroundColor: Colors.main,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 2
   },
   scaleContainer:{
     position: "absolute",
