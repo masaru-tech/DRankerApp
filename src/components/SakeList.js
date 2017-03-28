@@ -12,16 +12,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SearchBar, ListItem } from 'react-native-elements';
-import Header from './Header';
 import Colors from '../Colors';
 import axios from 'axios';
 const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
-import { Actions } from 'react-native-router-flux';
-
-
-StatusBar.setBarStyle('light-content', true);
 
 export default class SakeList extends Component {
   constructor(props) {
@@ -34,6 +29,13 @@ export default class SakeList extends Component {
       canLoadMoreContent: false,
       nextUrl: null
     };
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  onNavigatorEvent(event) {
+    if (event.id == 'close') {
+      this.props.navigator.dismissModal();
+    }
   }
 
   _loadMoreContentAsync = async () => {
@@ -56,7 +58,7 @@ export default class SakeList extends Component {
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <TouchableHighlight underlayColor={Colors.select} onPress={Actions.sakeDetail}>
+      <TouchableHighlight underlayColor={Colors.select}>
         <View>
           <ListItem
             title={this.state.sakes[rowID].name} />
@@ -102,10 +104,6 @@ export default class SakeList extends Component {
   render() {
     return (
       <View>
-        <View style={styles.statusBar} backgroundColor={Colors.main}>
-          <StatusBar />
-        </View>
-        <Header />
         <SearchBar
           onChangeText={this.searchSake.bind(this)}
           containerStyle={styles.searchBar}
@@ -129,9 +127,6 @@ export default class SakeList extends Component {
 }
 
 const styles = StyleSheet.create({
-  statusBar: {
-    height: 20
-  },
   searchBar: {
     borderTopWidth: 0,
     borderBottomWidth: 0,
