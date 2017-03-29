@@ -21,6 +21,10 @@ export default observer(class CheckIn extends Component {
     }
   }
 
+  componentWillMount() {
+    this.props.store.clearSelectSakes();
+  }
+
   render() {
     let selectSakes = this.props.store.selectSakes.map((sake) => {
       return <ListItem key={sake.id} title={sake.name} hideChevron={true} />
