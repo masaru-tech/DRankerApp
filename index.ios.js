@@ -3,6 +3,8 @@
  * https://github.com/facebook/react-native
  * @flow
  */
+import mobx from 'mobx';
+mobx.useStrict(true);
 
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
@@ -15,9 +17,13 @@ registerScreens();
 
 import * as Keychain from 'react-native-keychain';
 
+import AppStore from './src/AppStore';
+
 Keychain.getInternetCredentials('dranker')
         .then((credentials) => {
           if (credentials) {
+            const store = new AppStore({token: credentials.password});
+
             iconsLoaded.then(() => {
               Navigation.startSingleScreenApp({
                 screen: {
@@ -28,17 +34,22 @@ Keychain.getInternetCredentials('dranker')
                   }
                 },
                 passProps: {
-                  token: credentials.password
+                  store: store
                 }
               });
             });
           } else {
+            const store = new Store({});
+
             Navigation.startSingleScreenApp({
               screen: {
                 screen: 'RegisterScreen',
                 navigatorStyle: {
                   navBarHidden: true
                 }
+              },
+              passProps: {
+                store: store
               }
             });
           }

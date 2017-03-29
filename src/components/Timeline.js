@@ -70,7 +70,9 @@ export default class Timeline extends Component {
           this.props.navigator.showModal({
             screen: "CheckInScreen",
             title: "登録",
-            passProps: {},
+            passProps: {
+              store: this.props.store
+            },
             navigatorStyle: {},
             animationType: 'slide-up'
           });

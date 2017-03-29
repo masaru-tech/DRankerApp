@@ -17,8 +17,9 @@ import axios from 'axios';
 const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
+import {observer} from 'mobx-react/native';
 
-export default class SakeList extends Component {
+export default observer(class SakeList extends Component {
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -58,7 +59,10 @@ export default class SakeList extends Component {
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <TouchableHighlight underlayColor={Colors.select}>
+      <TouchableHighlight underlayColor={Colors.select} onPress={() => {
+        this.props.store.pushSelectSake(this.state.sakes[rowID]);
+        this.props.navigator.dismissModal();
+      }}>
         <View>
           <ListItem
             title={this.state.sakes[rowID].name} />
@@ -124,7 +128,7 @@ export default class SakeList extends Component {
       </View>
     );
   }
-}
+})
 
 const styles = StyleSheet.create({
   searchBar: {

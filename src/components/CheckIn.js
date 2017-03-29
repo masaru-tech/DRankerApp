@@ -5,10 +5,11 @@ import {
   Dimensions
 } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
+import {observer} from 'mobx-react/native';
 
 const { height } = Dimensions.get('window');
 
-export default class CheckIn extends Component {
+export default observer(class CheckIn extends Component {
   constructor(props) {
     super(props);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -21,6 +22,10 @@ export default class CheckIn extends Component {
   }
 
   render() {
+    let selectSakes = this.props.store.selectSakes.map((sake) => {
+      return <ListItem key={sake.id} title={sake.name} hideChevron={true} />
+    });
+
     return(
       <View style={{backgroundColor: '#EEEEEE', height: height}}>
         <List>
@@ -32,6 +37,7 @@ export default class CheckIn extends Component {
           />
         </List>
         <List>
+          {selectSakes}
           <ListItem
             key='sake'
             title="お酒を追加"
@@ -41,7 +47,9 @@ export default class CheckIn extends Component {
               this.props.navigator.showModal({
               screen: 'SakeListScreen',
               title: "お酒を検索",
-              passProps: {},
+              passProps: {
+                store: this.props.store
+              },
               navigatorStyle: {},
               animationType: 'slide-up'
               });
@@ -51,4 +59,4 @@ export default class CheckIn extends Component {
       </View>
     )
   }
-}
+})
