@@ -65,6 +65,7 @@ export default observer(class SakeList extends Component {
       }}>
         <View>
           <ListItem
+            hideChevron={true}
             title={this.state.sakes[rowID].name} />
         </View>
       </TouchableHighlight>
