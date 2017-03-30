@@ -39,7 +39,7 @@ Keychain.getInternetCredentials('dranker')
               });
             });
           } else {
-            const store = new Store({});
+            const store = new AppStore({});
 
             Navigation.startSingleScreenApp({
               screen: {
