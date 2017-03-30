@@ -86,24 +86,33 @@ export default observer(class SakeList extends Component {
 
   searchSake(searchTxt) {
     self = this;
-    axios.get('http://192.168.56.111:3000/api/sakes', {
-          params: {
-            keyword: searchTxt
-          }
-        })
-        .then((response) => {
-          let links = parse_link_header(response.headers.link);
-          let newSakes = response.data;
-          self.setState({
-            sakes: newSakes,
-            dataSource: self.state.dataSource.cloneWithRows(newSakes),
-            canLoadMoreContent: links.next != null,
-            nextUrl: links.next
-          })
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    if (searchTxt == '') {
+      this.setState({
+        akes: [],
+        dataSource: self.state.dataSource.cloneWithRows([]),
+        canLoadMoreContent: false,
+        nextUrl: null
+      })
+    } else {
+      axios.get('http://192.168.56.111:3000/api/sakes', {
+              params: {
+                keyword: searchTxt
+              }
+            })
+            .then((response) => {
+              let links = parse_link_header(response.headers.link);
+              let newSakes = response.data;
+              self.setState({
+                sakes: newSakes,
+                dataSource: self.state.dataSource.cloneWithRows(newSakes),
+                canLoadMoreContent: links.next != null,
+                nextUrl: links.next
+              })
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+    }
   }
 
   render() {
