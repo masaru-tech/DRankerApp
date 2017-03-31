@@ -24,18 +24,21 @@ export default observer(class CheckIn extends Component {
   }
 
   componentWillMount() {
-    this.props.store.clearSelectSakes();
+    this.props.store.initCheckIn();
   }
 
   render() {
-    selectSakes = this.props.store.selectSakes.map((sake) => {
+    const selectSakes = this.props.store.selectSakes.map((sake) => {
       return <ListItem key={sake.id} title={sake.name} hideChevron={true} />
     });
+    const selectedPlace = this.props.store.selectedPlace;
 
     return(
       <View>
         <View style={{backgroundColor: '#EEEEEE', height: height - 19 - 45}}>
           <List>
+            {selectedPlace.length != 0 ? 
+            <ListItem key={selectedPlace[0].place_id} title={selectedPlace[0].name} hideChevron={true} />:
             <ListItem
               key='map'
               title="場所を選択"
@@ -53,6 +56,7 @@ export default observer(class CheckIn extends Component {
                 });
               }}
             />
+            }
           </List>
           <List>
             {selectSakes}

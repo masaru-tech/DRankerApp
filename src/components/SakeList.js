@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   StatusBar,
   TouchableHighlight,
   RecyclerViewBackedScrollView,
   ListView,
-  Dimensions,
-  TextInput
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SearchBar, ListItem } from 'react-native-elements';

@@ -3,7 +3,8 @@ import {extendObservable, observable, action, computed} from 'mobx';
 export default class AppStore {
   constructor(initialStore) {
     extendObservable(this, {
-      selectSakes: [], // ArrayっぽいがArrayにあらず
+      selectSakes: [],
+      selectedPlace: [],
       get submitBtnDisabled() {
         return this.selectSakes.length == 0
       },
@@ -11,8 +12,12 @@ export default class AppStore {
       pushSelectSake: action((sake) => {
                       this.selectSakes.push({id: sake.id, name: sake.name});
       }),
-      clearSelectSakes: action(() => {
+      initCheckIn: action(() => {
                       this.selectSakes.clear();
+                      this.selectedPlace.clear();
+      }),
+      selectPlace: action((place) => {
+                      this.selectedPlace.push(place);
       })
     });
 

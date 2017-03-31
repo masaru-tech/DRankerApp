@@ -82,6 +82,7 @@ export default observer(class PlaceList extends Component {
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
       <TouchableHighlight underlayColor={Colors.select} onPress={() => {
+        this.props.store.selectPlace(this.state.places[rowID]);
         this.props.navigator.dismissModal();
       }}>
         <View>
