@@ -56,15 +56,18 @@ export default observer(class SakeList extends Component {
   }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
+    const sake = this.state.sakes[rowID];
     return (
       <TouchableHighlight underlayColor={Colors.select} onPress={() => {
-        this.props.store.pushSelectSake(this.state.sakes[rowID]);
+        this.props.store.pushSelectSake(sake);
         this.props.navigator.dismissModal();
       }}>
         <View>
           <ListItem
             hideChevron={true}
-            title={this.state.sakes[rowID].name} />
+            title={sake.name}
+            subtitle={sake.yomi}
+          />
         </View>
       </TouchableHighlight>
     );
