@@ -41,6 +41,17 @@ export default observer(class CheckIn extends Component {
               title="場所を選択"
               hideChevron={true}
               leftIcon={{name: 'md-pin', type: 'ionicon'}}
+              onPress={() => {
+                this.props.navigator.showModal({
+                screen: 'PlaceListScreen',
+                title: "お店を検索",
+                passProps: {
+                  store: this.props.store
+                },
+                navigatorStyle: {},
+                animationType: 'slide-up'
+                });
+              }}
             />
           </List>
           <List>
