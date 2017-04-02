@@ -18,6 +18,12 @@ export default class AppStore {
       }),
       selectPlace: action((place) => {
                       this.selectedPlace.push(place);
+      }),
+      clearPlace: action(() => {
+                      this.selectedPlace.clear();
+      }),
+      removeSelectSakeItem: action((item) => {
+                      this.selectSakes.remove(item);
       })
     });
 

@@ -8,6 +8,7 @@ import {
 import { List, ListItem, Button } from 'react-native-elements';
 import {observer} from 'mobx-react/native';
 import Colors from '../Colors';
+import DeletableItem from './DeletableItem';
 
 const { height, width } = Dimensions.get('window');
 
@@ -29,7 +30,7 @@ export default observer(class CheckIn extends Component {
 
   render() {
     const selectSakes = this.props.store.selectSakes.map((sake) => {
-      return <ListItem key={sake.id} title={sake.name} hideChevron={true} />
+      return <DeletableItem key={sake.id} title={sake.name} onPress={() => {this.props.store.removeSelectSakeItem(sake);}} />
     });
     const selectedPlace = this.props.store.selectedPlace;
 
@@ -38,7 +39,7 @@ export default observer(class CheckIn extends Component {
         <View style={{backgroundColor: '#EEEEEE', height: height - 19 - 45}}>
           <List>
             {selectedPlace.length != 0 ? 
-            <ListItem key={selectedPlace[0].place_id} title={selectedPlace[0].name} hideChevron={true} />:
+            <DeletableItem key={selectedPlace[0].place_id} title={selectedPlace[0].name} onPress={() => {this.props.store.clearPlace();}} />:
             <ListItem
               key='map'
               title="場所を選択"
