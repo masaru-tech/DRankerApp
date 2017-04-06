@@ -9,6 +9,7 @@ import { List, ListItem, Button } from 'react-native-elements';
 import {observer} from 'mobx-react/native';
 import Colors from '../Colors';
 import DeletableItem from './DeletableItem';
+import axios from 'axios';
 
 const { height, width } = Dimensions.get('window');
 
@@ -87,6 +88,25 @@ export default observer(class CheckIn extends Component {
           fontSize={20}
           disabled={this.props.store.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
+          onPress={() => {
+            const place_id = this.props.store.selectedPlace.length != 0 ? this.props.store.selectedPlace[0].place_id : null;
+            const sakes = this.props.store.selectSakes.map((sake)=>{ return sake.id });
+
+            axios.post('http://192.168.56.111:3000/api/checkins/add', {
+                checkin: {
+                  place_id: place_id,
+                  alcohols: sakes
+                }
+              },{
+                headers: { Authorization: `Bearer ${this.props.store.token}` }
+              })
+              .then((response) => {
+                this.props.navigator.dismissModal();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }}
           title='登録する'
         />
       </View>
