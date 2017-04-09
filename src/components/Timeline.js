@@ -13,6 +13,10 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../Colors';
+import axios from 'axios';
+import InfiniteScrollView from 'react-native-infinite-scroll-view';
+import { parse_link_header } from '../Util';
+import { ListItem } from 'react-native-elements';
 
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
@@ -21,24 +25,68 @@ export default class Timeline extends Component {
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    let checkins = [];
     this.state = {
-      data: ds.cloneWithRows(this._genRows())
+      checkins: checkins,
+      dataSource: ds.cloneWithRows(checkins),
+      canLoadMoreContent: false,
+      nextUrl: null
     };
   }
 
-  _genRows() {
-    let dataBlob = [];
-    for (var ii = 0; ii < 100; ii++) {
-      dataBlob.push('Row ' + ii);
-    }
-    return dataBlob;
+  componentDidMount() {
+    const self = this;
+    axios.get('http://192.168.56.111:3000/api/checkins', {
+            headers: { Authorization: `Bearer ${this.props.store.token}` }
+          })
+          .then((response) => {
+            let links = null;
+            let nextUrl = null;
+            if (response.headers.link) {
+              links = parse_link_header(response.headers.link);
+              nextUrl = links.next;
+            }
+            let newCheckins = response.data;
+            self.setState({
+              checkins: newCheckins,
+              dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+              canLoadMoreContent: links != null && links.next != null,
+              nextUrl: nextUrl
+            })
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+  }
+
+  _loadMoreContentAsync = async () => {
+    const self = this;
+    axios.get(this.state.nextUrl, {
+            headers: { Authorization: `Bearer ${this.props.store.token}` }
+          })
+          .then((response) => {
+            let links = parse_link_header(response.headers.link);
+            let newCheckins = self.state.checkins.concat(response.data);
+            self.setState({
+              checkins: newCheckins,
+              dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+              canLoadMoreContent: links.next != null,
+              nextUrl: links.next
+            })
+          })
+          .catch((error) => {
+            console.log(error);
+          });
   }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
+    const checkin = this.state.checkins[rowID];
     return (
       <TouchableHighlight underlayColor={Colors.select} onPress={() => {}}>
-        <View style={{padding: 10}}>
-          <Text>{rowData}</Text>
+        <View>
+          <ListItem
+            title={checkin.username}
+          />
         </View>
       </TouchableHighlight>
     );
@@ -60,11 +108,14 @@ export default class Timeline extends Component {
     return (
       <View style={{flex: 1}}>
         <ListView
-          dataSource={this.state.data}
+          dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
-          renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+          renderScrollComponent={props => <InfiniteScrollView {...props} />}
           renderSeparator={this._renderSeparator}
           enableEmptySections={true}
+          canLoadMore={this.state.canLoadMoreContent}
+          distanceToLoadMore={50}
+          onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
         />
         <TouchableWithoutFeedback onPress={() => {
           this.props.navigator.showModal({
