@@ -16,7 +16,7 @@ import Colors from '../Colors';
 import axios from 'axios';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
-import { ListItem } from 'react-native-elements';
+import TimelineItem from './TimelineItem';
 
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
@@ -82,13 +82,16 @@ export default class Timeline extends Component {
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     const checkin = this.state.checkins[rowID];
     return (
-      <TouchableHighlight underlayColor={Colors.select} onPress={() => {}}>
-        <View>
-          <ListItem
-            title={checkin.username}
-          />
-        </View>
-      </TouchableHighlight>
+      <View>
+        <TimelineItem
+          username={checkin.username}
+          account_no="@masaruTech"
+          posted_at="2017/04/12"
+          place_name="お店名"
+          alcohols={checkin.alcohols}
+          thumbnail={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"}}
+        />
+      </View>
     );
   }
 
