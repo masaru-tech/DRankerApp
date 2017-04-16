@@ -39,7 +39,9 @@ export default observer(class SakeList extends Component {
 
   _loadMoreContentAsync = async () => {
     self = this;
-    axios.get(this.state.nextUrl)
+    axios.get(this.state.nextUrl,{
+            headers: { Authorization: `Bearer ${this.props.store.token}` }
+          })
         .then((response) => {
           let links = parse_link_header(response.headers.link);
           let newSakes = self.state.sakes.concat(response.data);
@@ -98,7 +100,8 @@ export default observer(class SakeList extends Component {
       axios.get('http://192.168.56.111:3000/api/sakes', {
               params: {
                 keyword: searchTxt
-              }
+              },
+              headers: { Authorization: `Bearer ${this.props.store.token}` }
             })
             .then((response) => {
               let links = parse_link_header(response.headers.link);
