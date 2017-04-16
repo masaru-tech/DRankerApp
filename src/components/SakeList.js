@@ -39,7 +39,7 @@ export default observer(class SakeList extends Component {
   }
 
   _loadMoreContentAsync = async () => {
-    self = this;
+    const self = this;
     axios.get(this.state.nextUrl,{
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })

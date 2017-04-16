@@ -108,7 +108,7 @@ export default observer(class PlaceList extends Component {
 
   searchPlace() {
     const { searchTxt } = this.state;
-    self = this;
+    const self = this;
     if (searchTxt == '') {
       this.setState({
         places: [],
