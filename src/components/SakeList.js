@@ -26,7 +26,8 @@ export default observer(class SakeList extends Component {
       sakes: sakes,
       dataSource: ds.cloneWithRows(sakes),
       canLoadMoreContent: false,
-      nextUrl: null
+      nextUrl: null,
+      searchTxt: ''
     };
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
@@ -87,8 +88,9 @@ export default observer(class SakeList extends Component {
     );
   }
 
-  searchSake(searchTxt) {
-    self = this;
+  searchSake() {
+    const { searchTxt } = this.state;
+    const self = this;
     if (searchTxt == '') {
       this.setState({
         akes: [],
@@ -123,7 +125,8 @@ export default observer(class SakeList extends Component {
     return (
       <View>
         <SearchBar
-          onChangeText={this.searchSake.bind(this)}
+          onChangeText={(text) => {this.setState({searchTxt: text});}}
+          onSubmitEditing={() => {this.searchSake();}}
           containerStyle={styles.searchBar}
           inputStyle={styles.searchInput}
           placeholder='お酒名/よみがなで検索' />
