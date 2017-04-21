@@ -9,7 +9,8 @@ import {
   ListView,
   Dimensions,
   PixelRatio,
-  StatusBar
+  StatusBar,
+  RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../Colors';
@@ -30,7 +31,9 @@ export default class Timeline extends Component {
       checkins: checkins,
       dataSource: ds.cloneWithRows(checkins),
       canLoadMoreContent: false,
-      nextUrl: null
+      nextUrl: null,
+      prevUrl: null,
+      refreshing: false
     };
   }
 
@@ -42,16 +45,19 @@ export default class Timeline extends Component {
           .then((response) => {
             let links = null;
             let nextUrl = null;
+            let prevUrl = null;
             if (response.headers.link) {
               links = parse_link_header(response.headers.link);
               nextUrl = links.next;
+              prevUrl = links.prev;
             }
             let newCheckins = response.data;
             self.setState({
               checkins: newCheckins,
               dataSource: self.state.dataSource.cloneWithRows(newCheckins),
               canLoadMoreContent: links != null && links.next != null,
-              nextUrl: nextUrl
+              nextUrl: nextUrl,
+              prevUrl: prevUrl
             })
           })
           .catch((error) => {
@@ -59,24 +65,39 @@ export default class Timeline extends Component {
           });
   }
 
-  _loadMoreContentAsync = async () => {
+  _loadMoreContentAsync = async (direction) => {
     const self = this;
-    axios.get(this.state.nextUrl, {
-            headers: { Authorization: `Bearer ${this.props.store.token}` }
-          })
-          .then((response) => {
-            let links = parse_link_header(response.headers.link);
-            let newCheckins = self.state.checkins.concat(response.data);
-            self.setState({
-              checkins: newCheckins,
-              dataSource: self.state.dataSource.cloneWithRows(newCheckins),
-              canLoadMoreContent: links.next != null,
-              nextUrl: links.next
+    const url = direction == 'next' ? this.state.nextUrl : this.state.prevUrl
+    if (!this.state.refreshing) {
+      axios.get(url, {
+              headers: { Authorization: `Bearer ${this.props.store.token}` }
             })
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            .then((response) => {
+              let links = parse_link_header(response.headers.link);
+              if (direction == 'next') {
+                let newCheckins = response.data.concat(self.state.checkins);
+                let nextUrl = links.next ? links.next : url
+                self.setState({
+                  checkins: newCheckins,
+                  dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+                  nextUrl: nextUrl,
+                  refreshing: false
+                })
+              } else {
+                let newCheckins = self.state.checkins.concat(response.data);
+                self.setState({
+                  checkins: newCheckins,
+                  dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+                  canLoadMoreContent: links.prev != null,
+                  prevUrl: links.prev,
+                  refreshing: false
+                })
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+    }
   }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -107,6 +128,11 @@ export default class Timeline extends Component {
     );
   }
 
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this._loadMoreContentAsync('next');
+  }
+
   render() {
     return (
       <View style={{flex: 1}}>
@@ -119,6 +145,12 @@ export default class Timeline extends Component {
           canLoadMore={this.state.canLoadMoreContent}
           distanceToLoadMore={50}
           onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }
         />
         <TouchableWithoutFeedback onPress={() => {
           this.props.navigator.showModal({

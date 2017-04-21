@@ -1,6 +1,6 @@
 export function parse_link_header(link_header) {
-    if (link_header.length === 0) {
-      throw new Error("input must not be of zero length");
+    if (link_header == undefined || link_header.length === 0) {
+      return [];
     }
 
     // Split parts by comma
