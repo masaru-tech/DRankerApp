@@ -22,6 +22,7 @@ export default observer(class PlaceList extends Component {
     let places = []
     this.state = {
       places: places,
+      search: false,
       dataSource: ds.cloneWithRows(places),
       canLoadMoreContent: false,
       pagetoken: null,
@@ -94,6 +95,19 @@ export default observer(class PlaceList extends Component {
     );
   }
 
+  _renderNewPlace() {
+    return (
+      <TouchableHighlight underlayColor={Colors.select} onPress={() => {
+      }}>
+        <View>
+          <ListItem
+            hideChevron={true}
+            title='現在地を登録' />
+        </View>
+      </TouchableHighlight>
+    );
+  }
+
   _renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
     return (
       <View
@@ -112,6 +126,7 @@ export default observer(class PlaceList extends Component {
     if (searchTxt == '') {
       this.setState({
         places: [],
+        search: false,
         dataSource: self.state.dataSource.cloneWithRows([]),
         canLoadMoreContent: false,
         pagetoken: null
@@ -132,6 +147,7 @@ export default observer(class PlaceList extends Component {
               let next_page_token = response.data.next_page_token;
               self.setState({
                 places: newPlaces,
+                search: true,
                 dataSource: self.state.dataSource.cloneWithRows(newPlaces),
                 canLoadMoreContent: next_page_token != null,
                 pagetoken: next_page_token
@@ -154,16 +170,19 @@ export default observer(class PlaceList extends Component {
           inputStyle={styles.searchInput}
           placeholder='お店名で検索' />
         <View style={{height: height - 110}}>
-          <ListView
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-            renderScrollComponent={props => <InfiniteScrollView {...props} />}
-            renderSeparator={this._renderSeparator}
-            enableEmptySections={true}
-            canLoadMore={this.state.canLoadMoreContent}
-            distanceToLoadMore={50}
-            onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
-          />
+          {this.state.search && this.state.places.length == 0 ?
+            this._renderNewPlace():
+            <ListView
+              dataSource={this.state.dataSource}
+              renderRow={this._renderRow.bind(this)}
+              renderScrollComponent={props => <InfiniteScrollView {...props} />}
+              renderSeparator={this._renderSeparator}
+              enableEmptySections={true}
+              canLoadMore={this.state.canLoadMoreContent}
+              distanceToLoadMore={50}
+              onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
+            />
+          }
         </View>
       </View>
     );
