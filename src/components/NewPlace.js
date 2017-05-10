@@ -17,6 +17,7 @@ export default class NewPlace extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       placeName: props.placeName,
+      lastPosition: null,
       submitBtnDisabled: false
     }
   }
@@ -25,6 +26,19 @@ export default class NewPlace extends Component {
     if (event.id == 'close') {
       this.props.navigator.dismissModal();
     }
+  }
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lastPosition = position;
+        // latitude:緯度
+        // longitude:経度
+        this.setState({lastPosition: lastPosition});
+      },
+      (error) => console.log(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 }
+    );
   }
 
   render() {
@@ -47,6 +61,19 @@ export default class NewPlace extends Component {
           disabled={this.state.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
           onPress={() => {
+            axios.post('http://192.168.56.111:3000/api/places', {
+                name: this.state.placeName,
+                lat: this.state.lastPosition.coords.latitude,
+                lng: this.state.lastPosition.coords.longitude
+              },{
+                headers: { Authorization: `Bearer ${this.props.store.token}` }
+              })
+              .then((response) => {
+                this.props.navigator.dismissModal();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }}
           title='登録する'
         />
