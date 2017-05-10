@@ -98,6 +98,15 @@ export default observer(class PlaceList extends Component {
   _renderNewPlace() {
     return (
       <TouchableHighlight underlayColor={Colors.select} onPress={() => {
+        this.props.navigator.showModal({
+          screen: "NewPlaceScreen",
+          title: "新しい場所の追加",
+          passProps: {
+            placeName: this.state.searchTxt
+          },
+          navigatorStyle: {},
+          animationType: 'slide-up'
+        });
       }}>
         <View>
           <ListItem

@@ -7,6 +7,7 @@ import TimelineScreen from './TimelineScreen';
 import CheckInScreen from './CheckInScreen';
 import SakeListScreen from './SakeListScreen';
 import PlaceListScreen from './PlaceListScreen';
+import NewPlaceScreen from './NewPlaceScreen';
 
 // register all screens of the app (including internal ones)
 export function registerScreens() {
@@ -15,4 +16,5 @@ export function registerScreens() {
   Navigation.registerComponent('CheckInScreen', () => CheckInScreen);
   Navigation.registerComponent('SakeListScreen', () => SakeListScreen);
   Navigation.registerComponent('PlaceListScreen', () => PlaceListScreen);
+  Navigation.registerComponent('NewPlaceScreen', () => NewPlaceScreen);
 }
