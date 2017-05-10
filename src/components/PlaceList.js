@@ -30,7 +30,6 @@ export default observer(class PlaceList extends Component {
       searchTxt: ''
     };
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-    this.watchID = null;
   }
 
   onNavigatorEvent(event) {
@@ -40,9 +39,9 @@ export default observer(class PlaceList extends Component {
   }
 
   componentDidMount() {
-    this.watchID = navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
-        var lastPosition = position;
+        const lastPosition = position;
         // latitude:緯度
         // longitude:経度
         this.setState({lastPosition: lastPosition});
@@ -50,10 +49,6 @@ export default observer(class PlaceList extends Component {
       (error) => console.log(error.message),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 }
     );
-  }
-
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
   }
 
   _loadMoreContentAsync = async () => {
@@ -102,6 +97,7 @@ export default observer(class PlaceList extends Component {
           screen: "NewPlaceScreen",
           title: "新しい場所の追加",
           passProps: {
+            store: this.props.store,
             placeName: this.state.searchTxt
           },
           navigatorStyle: {},
