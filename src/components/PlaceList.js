@@ -14,6 +14,7 @@ import axios from 'axios';
 const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {observer} from 'mobx-react/native';
+import { parse_link_header } from '../Util';
 
 export default observer(class PlaceList extends Component {
   constructor(props) {
@@ -52,27 +53,23 @@ export default observer(class PlaceList extends Component {
   }
 
   _loadMoreContentAsync = async () => {
-    self = this;
-    axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json', {
-            params: {
-              pagetoken: this.state.pagetoken,
-              key: 'development key'
-            }
+    const self = this;
+    axios.get(this.state.nextUrl,{
+            headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
-          .then((response) => {
-            let newPlaces = response.data.results.map((place) => {return {name: place.name, place_id: place.place_id}});
-            newPlaces = self.state.places.concat(newPlaces);
-            let next_page_token = response.data.next_page_token;
-            self.setState({
-              places: newPlaces,
-              dataSource: self.state.dataSource.cloneWithRows(newPlaces),
-              canLoadMoreContent: next_page_token != null,
-              pagetoken: next_page_token
-            })
+        .then((response) => {
+          let links = parse_link_header(response.headers.link);
+          let newPlaces = response.data;
+          self.setState({
+            places: newPlaces,
+            dataSource: self.state.dataSource.cloneWithRows(newPlaces),
+            canLoadMoreContent: links.next != null,
+            nextUrl: links.next
           })
-          .catch((error) => {
-            console.log(error);
-          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   }
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
@@ -137,25 +134,21 @@ export default observer(class PlaceList extends Component {
         pagetoken: null
       })
     } else {
-      axios.get('https://maps.googleapis.com/maps/api/place/textsearch/json', {
+      axios.get('http://192.168.56.111:3000/api/places', {
               params: {
-                location: `${this.state.lastPosition.coords.latitude},${this.state.lastPosition.coords.longitude}`,
-                radius: 1000,
-                language: 'ja',
-                types: 'food|liquor_store|grocery_or_supermarket',
-                query: searchTxt,
-                key: 'development key'
-              }
+                keyword: searchTxt
+              },
+              headers: { Authorization: `Bearer ${this.props.store.token}` }
             })
             .then((response) => {
-              let newPlaces = response.data.results.map((place) => {return {name: place.name, place_id: place.place_id}});
-              let next_page_token = response.data.next_page_token;
+              let links = parse_link_header(response.headers.link);
+              let newPlaces = response.data;
               self.setState({
                 places: newPlaces,
                 search: true,
                 dataSource: self.state.dataSource.cloneWithRows(newPlaces),
-                canLoadMoreContent: next_page_token != null,
-                pagetoken: next_page_token
+                canLoadMoreContent: links.next != null,
+                nextUrl: links.next
               })
             })
             .catch((error) => {
