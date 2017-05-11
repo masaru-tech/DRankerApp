@@ -34,8 +34,13 @@ export default observer(class PlaceList extends Component {
   }
 
   onNavigatorEvent(event) {
-    if (event.id == 'close') {
-      this.props.navigator.dismissModal();
+    switch(event.id) {
+      case 'close':
+        this.props.navigator.dismissModal();
+        break;
+      case 'willAppear':
+        this.searchPlace();
+        break;
     }
   }
 
