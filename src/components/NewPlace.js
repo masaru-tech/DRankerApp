@@ -8,6 +8,7 @@ import { Container, Content, Form, Item, Input, InputGroup, Label} from 'native-
 import { Button, normalize, colors } from 'react-native-elements';
 import Colors from '../Colors';
 import axios from 'axios';
+import { PLACES_URL } from '../Apis';
 
 const { height, width } = Dimensions.get('window');
 
@@ -61,7 +62,7 @@ export default class NewPlace extends Component {
           disabled={this.state.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
           onPress={() => {
-            axios.post('http://192.168.56.111:3000/api/places', {
+            axios.post(PLACES_URL, {
                 name: this.state.placeName,
                 lat: this.state.lastPosition.coords.latitude,
                 lng: this.state.lastPosition.coords.longitude

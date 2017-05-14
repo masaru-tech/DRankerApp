@@ -16,6 +16,7 @@ const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
 import {observer} from 'mobx-react/native';
+import { SAKES_URL } from '../Apis';
 
 export default observer(class SakeList extends Component {
   constructor(props) {
@@ -99,7 +100,7 @@ export default observer(class SakeList extends Component {
         nextUrl: null
       })
     } else {
-      axios.get('http://192.168.56.111:3000/api/sakes', {
+      axios.get(SAKES_URL, {
               params: {
                 keyword: searchTxt
               },

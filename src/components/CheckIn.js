@@ -10,6 +10,7 @@ import {observer} from 'mobx-react/native';
 import Colors from '../Colors';
 import DeletableItem from './DeletableItem';
 import axios from 'axios';
+import { CHECKINS_ADD_URL } from '../Apis';
 
 const { height, width } = Dimensions.get('window');
 
@@ -92,7 +93,7 @@ export default observer(class CheckIn extends Component {
             const place_id = this.props.store.selectedPlace.length != 0 ? this.props.store.selectedPlace[0].place_id : null;
             const sakes = this.props.store.selectSakes.map((sake)=>{ return sake.id });
 
-            axios.post('http://192.168.56.111:3000/api/checkins/add', {
+            axios.post(CHECKINS_ADD_URL, {
                 checkin: {
                   place_id: place_id,
                   alcohols: sakes

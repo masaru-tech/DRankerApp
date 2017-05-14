@@ -15,6 +15,7 @@ const { height } = Dimensions.get('window');
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {observer} from 'mobx-react/native';
 import { parse_link_header } from '../Util';
+import { PLACES_URL } from '../Apis';
 
 export default observer(class PlaceList extends Component {
   constructor(props) {
@@ -139,7 +140,7 @@ export default observer(class PlaceList extends Component {
         pagetoken: null
       })
     } else {
-      axios.get('http://192.168.56.111:3000/api/places', {
+      axios.get(PLACES_URL, {
               params: {
                 keyword: searchTxt
               },

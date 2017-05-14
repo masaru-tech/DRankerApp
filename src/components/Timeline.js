@@ -18,6 +18,7 @@ import axios from 'axios';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
 import TimelineItem from './TimelineItem';
+import { CHECKINS_URL } from '../Apis';
 
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
@@ -39,7 +40,7 @@ export default class Timeline extends Component {
 
   componentDidMount() {
     const self = this;
-    axios.get('http://192.168.56.111:3000/api/checkins', {
+    axios.get(CHECKINS_URL, {
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
           .then((response) => {

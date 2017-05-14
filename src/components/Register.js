@@ -15,6 +15,7 @@ import Colors from '../Colors';
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { iconsMap, iconsLoaded } from '../AppIcons';
+import { USERS_URL } from '../Apis';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,7 +32,7 @@ export default class Register extends Component {
   }
 
   register() {
-    axios.post('http://192.168.56.111:3000/api/users', {
+    axios.post(USERS_URL, {
             display_name: this.state.displayName
           })
           .then((response) => {
