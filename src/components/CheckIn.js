@@ -90,7 +90,7 @@ export default observer(class CheckIn extends Component {
           disabled={this.props.store.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
           onPress={() => {
-            const place_id = this.props.store.selectedPlace.length != 0 ? this.props.store.selectedPlace[0].place_id : null;
+            const place_id = this.props.store.selectedPlace.length != 0 ? this.props.store.selectedPlace[0].id : null;
             const sakes = this.props.store.selectSakes.map((sake)=>{ return sake.id });
 
             axios.post(CHECKINS_ADD_URL, {
