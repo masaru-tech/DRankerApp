@@ -16,6 +16,7 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { iconsMap, iconsLoaded } from '../AppIcons';
 import { USERS_URL } from '../Apis';
+import AppStore from '../AppStore';
 
 const { width, height } = Dimensions.get('window');
 
@@ -37,6 +38,7 @@ export default class Register extends Component {
           })
           .then((response) => {
             const jwt = response.data.jwt;
+            const store = new AppStore({token: jwt});
             Keychain.setInternetCredentials('dranker', 'dranker', jwt)
                     .then(() => {
                       console.log('Credentials saved successfully!');
@@ -50,7 +52,10 @@ export default class Register extends Component {
                             navigatorStyle: {
                               navBarNoBorder: true
                             },
-                            backButtonHidden: true
+                            backButtonHidden: true,
+                            passProps: {
+                              store: store
+                            }
                           });
                         }, 1100);
                       });
