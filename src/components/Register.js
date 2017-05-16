@@ -33,6 +33,7 @@ export default class Register extends Component {
   }
 
   register() {
+    this._loginBeforeAnimation();
     axios.post(USERS_URL, {
             display_name: this.state.displayName
           })
@@ -42,7 +43,7 @@ export default class Register extends Component {
             Keychain.setInternetCredentials('dranker', 'dranker', jwt)
                     .then(() => {
                       console.log('Credentials saved successfully!');
-                      this._loginAnimation();
+                      this._loginAfterAnimation();
                       iconsLoaded.then(() => {
                         setTimeout(() => {
                           this.props.navigator.push({
@@ -66,7 +67,7 @@ export default class Register extends Component {
           });
   }
 
-  _loginAnimation() {
+  _loginBeforeAnimation() {
     this.setState({
       on: 1,
     });
@@ -85,6 +86,9 @@ export default class Register extends Component {
         on: 2
       });
     });
+  }
+
+  _loginAfterAnimation() {
     Animated.sequence([
       Animated.delay(600),
       Animated.timing(
