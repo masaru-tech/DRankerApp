@@ -30,7 +30,7 @@ const DeletableItem = ({
         </View>
         <View style={styles.chevronContainer}>
           <Icon
-            size={24}
+            size={32}
             name='md-close-circle'
             color={colors.grey4}
             onPress={onPress}
