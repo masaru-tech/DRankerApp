@@ -17,6 +17,7 @@ import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
 import {observer} from 'mobx-react/native';
 import { SAKES_URL } from '../Apis';
+import SleekLoadingIndicator from 'react-native-sleek-loading-indicator';
 
 export default observer(class SakeList extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ export default observer(class SakeList extends Component {
       dataSource: ds.cloneWithRows(sakes),
       canLoadMoreContent: false,
       nextUrl: null,
-      searchTxt: ''
+      searchTxt: '',
+      loading: false
     };
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
@@ -41,6 +43,7 @@ export default observer(class SakeList extends Component {
 
   _loadMoreContentAsync = async () => {
     const self = this;
+    this.setState({loading: true});
     axios.get(this.state.nextUrl,{
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
@@ -51,7 +54,8 @@ export default observer(class SakeList extends Component {
             sakes: newSakes,
             dataSource: self.state.dataSource.cloneWithRows(newSakes),
             canLoadMoreContent: links.next != null,
-            nextUrl: links.next
+            nextUrl: links.next,
+            loading: false
           })
         })
         .catch((error) => {
@@ -100,6 +104,7 @@ export default observer(class SakeList extends Component {
         nextUrl: null
       })
     } else {
+      this.setState({loading: true});
       axios.get(SAKES_URL, {
               params: {
                 keyword: searchTxt
@@ -113,7 +118,8 @@ export default observer(class SakeList extends Component {
                 sakes: newSakes,
                 dataSource: self.state.dataSource.cloneWithRows(newSakes),
                 canLoadMoreContent: links.next != null,
-                nextUrl: links.next
+                nextUrl: links.next,
+                loading: false
               })
             })
             .catch((error) => {
@@ -143,6 +149,7 @@ export default observer(class SakeList extends Component {
             onLoadMoreAsync={this._loadMoreContentAsync.bind(this)}
           />
         </View>
+        <SleekLoadingIndicator loading={this.state.loading} />
       </View>
     );
   }

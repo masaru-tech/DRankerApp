@@ -11,12 +11,16 @@ import Colors from '../Colors';
 import DeletableItem from './DeletableItem';
 import axios from 'axios';
 import { CHECKINS_ADD_URL } from '../Apis';
+import SleekLoadingIndicator from 'react-native-sleek-loading-indicator';
 
 const { height, width } = Dimensions.get('window');
 
 export default observer(class CheckIn extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: false
+    };
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -90,6 +94,7 @@ export default observer(class CheckIn extends Component {
           disabled={this.props.store.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
           onPress={() => {
+            this.setState({loading: true});
             const place_id = this.props.store.selectedPlace.length != 0 ? this.props.store.selectedPlace[0].id : null;
             const sakes = this.props.store.selectSakes.map((sake)=>{ return sake.id });
 
@@ -102,6 +107,7 @@ export default observer(class CheckIn extends Component {
                 headers: { Authorization: `Bearer ${this.props.store.token}` }
               })
               .then((response) => {
+                this.setState({loading: false});
                 this.props.navigator.dismissModal();
               })
               .catch((error) => {
@@ -110,6 +116,7 @@ export default observer(class CheckIn extends Component {
           }}
           title='登録する'
         />
+        <SleekLoadingIndicator loading={this.state.loading} />
       </View>
     )
   }

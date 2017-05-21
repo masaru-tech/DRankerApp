@@ -16,6 +16,7 @@ import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {observer} from 'mobx-react/native';
 import { parse_link_header } from '../Util';
 import { PLACES_URL } from '../Apis';
+import SleekLoadingIndicator from 'react-native-sleek-loading-indicator';
 
 export default observer(class PlaceList extends Component {
   constructor(props) {
@@ -29,7 +30,8 @@ export default observer(class PlaceList extends Component {
       canLoadMoreContent: false,
       pagetoken: null,
       lastPosition: null,
-      searchTxt: ''
+      searchTxt: '',
+      loading: false
     };
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
@@ -60,6 +62,7 @@ export default observer(class PlaceList extends Component {
 
   _loadMoreContentAsync = async () => {
     const self = this;
+    this.setState({loading: ture});
     axios.get(this.state.nextUrl,{
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
@@ -70,7 +73,8 @@ export default observer(class PlaceList extends Component {
             places: newPlaces,
             dataSource: self.state.dataSource.cloneWithRows(newPlaces),
             canLoadMoreContent: links.next != null,
-            nextUrl: links.next
+            nextUrl: links.next,
+            loading: false
           })
         })
         .catch((error) => {
@@ -140,6 +144,7 @@ export default observer(class PlaceList extends Component {
         pagetoken: null
       })
     } else {
+      this.setState({loading: true});
       axios.get(PLACES_URL, {
               params: {
                 keyword: searchTxt
@@ -154,7 +159,8 @@ export default observer(class PlaceList extends Component {
                 search: true,
                 dataSource: self.state.dataSource.cloneWithRows(newPlaces),
                 canLoadMoreContent: links.next != null,
-                nextUrl: links.next
+                nextUrl: links.next,
+                loading: false
               })
             })
             .catch((error) => {
@@ -188,6 +194,7 @@ export default observer(class PlaceList extends Component {
             />
           }
         </View>
+        <SleekLoadingIndicator loading={this.state.loading} />
       </View>
     );
   }

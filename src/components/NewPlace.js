@@ -9,6 +9,7 @@ import { Button, normalize, colors } from 'react-native-elements';
 import Colors from '../Colors';
 import axios from 'axios';
 import { PLACES_URL } from '../Apis';
+import SleekLoadingIndicator from 'react-native-sleek-loading-indicator';
 
 const { height, width } = Dimensions.get('window');
 
@@ -19,7 +20,8 @@ export default class NewPlace extends Component {
     this.state = {
       placeName: props.placeName,
       lastPosition: null,
-      submitBtnDisabled: false
+      submitBtnDisabled: false,
+      loading: false
     }
   }
 
@@ -62,6 +64,7 @@ export default class NewPlace extends Component {
           disabled={this.state.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
           onPress={() => {
+            this.setState({loading: ture});
             axios.post(PLACES_URL, {
                 name: this.state.placeName,
                 lat: this.state.lastPosition.coords.latitude,
@@ -70,6 +73,7 @@ export default class NewPlace extends Component {
                 headers: { Authorization: `Bearer ${this.props.store.token}` }
               })
               .then((response) => {
+                this.setState({loading: false});
                 this.props.navigator.dismissModal();
               })
               .catch((error) => {
@@ -78,6 +82,7 @@ export default class NewPlace extends Component {
           }}
           title='登録する'
         />
+        <SleekLoadingIndicator loading={this.state.loading} />
       </Container>
     )
   }
