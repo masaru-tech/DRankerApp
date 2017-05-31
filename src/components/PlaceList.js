@@ -61,7 +61,6 @@ export default observer(class PlaceList extends Component {
   }
 
   _loadMoreContentAsync = async () => {
-    const self = this;
     this.setState({loading: ture});
     axios.get(this.state.nextUrl,{
             headers: { Authorization: `Bearer ${this.props.store.token}` }
@@ -69,9 +68,9 @@ export default observer(class PlaceList extends Component {
         .then((response) => {
           let links = parse_link_header(response.headers.link);
           let newPlaces = response.data;
-          self.setState({
+          this.setState({
             places: newPlaces,
-            dataSource: self.state.dataSource.cloneWithRows(newPlaces),
+            dataSource: this.state.dataSource.cloneWithRows(newPlaces),
             canLoadMoreContent: links.next != null,
             nextUrl: links.next,
             loading: false
@@ -134,12 +133,11 @@ export default observer(class PlaceList extends Component {
 
   searchPlace() {
     const { searchTxt } = this.state;
-    const self = this;
     if (searchTxt == '') {
       this.setState({
         places: [],
         search: false,
-        dataSource: self.state.dataSource.cloneWithRows([]),
+        dataSource: this.state.dataSource.cloneWithRows([]),
         canLoadMoreContent: false,
         pagetoken: null
       })
@@ -154,10 +152,10 @@ export default observer(class PlaceList extends Component {
             .then((response) => {
               let links = parse_link_header(response.headers.link);
               let newPlaces = response.data;
-              self.setState({
+              this.setState({
                 places: newPlaces,
                 search: true,
-                dataSource: self.state.dataSource.cloneWithRows(newPlaces),
+                dataSource: this.state.dataSource.cloneWithRows(newPlaces),
                 canLoadMoreContent: links.next != null,
                 nextUrl: links.next,
                 loading: false

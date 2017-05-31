@@ -42,17 +42,16 @@ export default observer(class SakeList extends Component {
   }
 
   _loadMoreContentAsync = async () => {
-    const self = this;
     this.setState({loading: true});
     axios.get(this.state.nextUrl,{
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
         .then((response) => {
           let links = parse_link_header(response.headers.link);
-          let newSakes = self.state.sakes.concat(response.data);
-          self.setState({
+          let newSakes = this.state.sakes.concat(response.data);
+          this.setState({
             sakes: newSakes,
-            dataSource: self.state.dataSource.cloneWithRows(newSakes),
+            dataSource: this.state.dataSource.cloneWithRows(newSakes),
             canLoadMoreContent: links.next != null,
             nextUrl: links.next,
             loading: false
@@ -95,11 +94,10 @@ export default observer(class SakeList extends Component {
 
   searchSake() {
     const { searchTxt } = this.state;
-    const self = this;
     if (searchTxt == '') {
       this.setState({
         akes: [],
-        dataSource: self.state.dataSource.cloneWithRows([]),
+        dataSource: this.state.dataSource.cloneWithRows([]),
         canLoadMoreContent: false,
         nextUrl: null
       })
@@ -114,9 +112,9 @@ export default observer(class SakeList extends Component {
             .then((response) => {
               let links = parse_link_header(response.headers.link);
               let newSakes = response.data;
-              self.setState({
+              this.setState({
                 sakes: newSakes,
-                dataSource: self.state.dataSource.cloneWithRows(newSakes),
+                dataSource: this.state.dataSource.cloneWithRows(newSakes),
                 canLoadMoreContent: links.next != null,
                 nextUrl: links.next,
                 loading: false

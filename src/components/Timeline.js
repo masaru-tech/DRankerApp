@@ -39,7 +39,6 @@ export default class Timeline extends Component {
   }
 
   componentDidMount() {
-    const self = this;
     axios.get(CHECKINS_URL, {
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
@@ -53,9 +52,9 @@ export default class Timeline extends Component {
               prevUrl = links.prev;
             }
             let newCheckins = response.data;
-            self.setState({
+            this.setState({
               checkins: newCheckins,
-              dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+              dataSource: this.state.dataSource.cloneWithRows(newCheckins),
               canLoadMoreContent: links != null && links.next != null,
               nextUrl: nextUrl,
               prevUrl: prevUrl
@@ -67,7 +66,6 @@ export default class Timeline extends Component {
   }
 
   _loadMoreContentAsync = async (direction) => {
-    const self = this;
     const url = direction == 'next' ? this.state.nextUrl : this.state.prevUrl
     if (!this.state.refreshing) {
       axios.get(url, {
@@ -76,19 +74,19 @@ export default class Timeline extends Component {
             .then((response) => {
               let links = parse_link_header(response.headers.link);
               if (direction == 'next') {
-                let newCheckins = response.data.concat(self.state.checkins);
+                let newCheckins = response.data.concat(this.state.checkins);
                 let nextUrl = links.next ? links.next : url
-                self.setState({
+                this.setState({
                   checkins: newCheckins,
-                  dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+                  dataSource: this.state.dataSource.cloneWithRows(newCheckins),
                   nextUrl: nextUrl,
                   refreshing: false
                 })
               } else {
-                let newCheckins = self.state.checkins.concat(response.data);
-                self.setState({
+                let newCheckins = this.state.checkins.concat(response.data);
+                this.setState({
                   checkins: newCheckins,
-                  dataSource: self.state.dataSource.cloneWithRows(newCheckins),
+                  dataSource: this.state.dataSource.cloneWithRows(newCheckins),
                   canLoadMoreContent: links.prev != null,
                   prevUrl: links.prev,
                   refreshing: false
