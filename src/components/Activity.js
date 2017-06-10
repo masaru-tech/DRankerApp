@@ -23,7 +23,7 @@ import { CHECKINS_URL } from '../Apis';
 const { width, height } = Dimensions.get('window');
 const pixel = 1 / PixelRatio.get();
 
-export default class Timeline extends Component {
+export default class Activity extends Component {
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});

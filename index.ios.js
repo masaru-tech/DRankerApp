@@ -27,7 +27,7 @@ Keychain.getInternetCredentials('dranker')
             iconsLoaded.then(() => {
               Navigation.startSingleScreenApp({
                 screen: {
-                  screen: 'TimelineScreen',
+                  screen: 'ActivityScreen',
                   titleImage: iconsMap['md-beer'],
                   navigatorStyle: {
                     navBarNoBorder: true

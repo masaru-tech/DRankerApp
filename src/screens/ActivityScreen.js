@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Timeline from '../components/Timeline';
+import Activity from '../components/Activity';
 import Colors from '../Colors';
 
-export default class TimelineScreen extends Component {
+export default class ActivityScreen extends Component {
   static navigatorStyle = {
     navBarBackgroundColor: Colors.main
   }
 
   render() {
     return (
-      <Timeline {...this.props} />
+      <Activity {...this.props} />
     );
   }
 }

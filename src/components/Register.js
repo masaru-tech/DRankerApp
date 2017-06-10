@@ -47,7 +47,7 @@ export default class Register extends Component {
                       iconsLoaded.then(() => {
                         setTimeout(() => {
                           this.props.navigator.push({
-                            screen: 'TimelineScreen',
+                            screen: 'ActivityScreen',
                             animated: false,
                             titleImage: iconsMap['md-beer'],
                             navigatorStyle: {
