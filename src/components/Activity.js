@@ -17,7 +17,7 @@ import Colors from '../Colors';
 import axios from 'axios';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import { parse_link_header } from '../Util';
-import TimelineItem from './TimelineItem';
+import ActivityItem from './ActivityItem';
 import { CHECKINS_URL } from '../Apis';
 
 const { width, height } = Dimensions.get('window');
@@ -102,27 +102,10 @@ export default class Activity extends Component {
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     const checkin = this.state.checkins[rowID];
     return (
-      <View>
-        <TimelineItem
-          username={checkin.username}
-          account_no="@masaruTech"
-          posted_at="2017/04/12"
-          place_name="お店名"
-          alcohols={checkin.alcohols}
-          thumbnail={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"}}
-        />
-      </View>
-    );
-  }
-
-  _renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    return (
-      <View
-        key={`${sectionID}-${rowID}`}
-        style={{
-          height: adjacentRowHighlighted ? 4 : 1,
-          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
-        }}
+      <ActivityItem
+        posted_at={checkin.created_at}
+        place_name={checkin.place_name}
+        alcohols={checkin.alcohols}
       />
     );
   }
@@ -139,7 +122,6 @@ export default class Activity extends Component {
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
           renderScrollComponent={props => <InfiniteScrollView {...props} />}
-          renderSeparator={this._renderSeparator}
           enableEmptySections={true}
           canLoadMore={this.state.canLoadMoreContent}
           distanceToLoadMore={50}
