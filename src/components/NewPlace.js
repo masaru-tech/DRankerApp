@@ -64,7 +64,7 @@ export default class NewPlace extends Component {
           disabled={this.state.submitBtnDisabled}
           disabledStyle={{backgroundColor: '#C0C0C0'}}
           onPress={() => {
-            this.setState({loading: ture});
+            this.setState({loading: true});
             axios.post(PLACES_URL, {
                 name: this.state.placeName,
                 lat: this.state.lastPosition.coords.latitude,

@@ -61,7 +61,7 @@ export default observer(class PlaceList extends Component {
   }
 
   _loadMoreContentAsync = async () => {
-    this.setState({loading: ture});
+    this.setState({loading: true});
     axios.get(this.state.nextUrl,{
             headers: { Authorization: `Bearer ${this.props.store.token}` }
           })
